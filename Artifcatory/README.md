@@ -58,4 +58,47 @@ cp postgresql-42.2.18.jar $JFROG_HOME/artifcatory/var/bootstrap/artifactory/tomc
 ```
 cd $JFROG_HOME/artifcatory/var/bootstrap/artifactory/tomcat/lib
 chown -R artifcatory:artifcatory postgresql-42.2.18.jar
+chmod 755 postgresql-42.2.18.jar
+```
+
+- update system.yaml file with postgres db details 
+
+```
+vi $JFROG_HOME/artifcatory/var/etc/system.yaml
+```
+below is the config file
+
+```
+configVersion: 1
+shared:
+  security: 
+  database:
+    driver: org.postgresql.Driver
+    password: password
+    type: postgresql
+    url: "jdbc:postgresql://<your db url, for example: localhost:5432>/artifactory"
+    username: artifactory
+  node:
+    haEnabled: true
+    primary: true
+```
+
+- Run install script 
+
+```
+sudo $JFROG_HOME/artifcatory/app/bin/installService.sh
+```
+
+make  sure system.yaml didnt change much..
+
+- start artifcatory service 
+
+```
+systemctl start artifactory.service 
+```
+
+- Check the logs whether its working or not 
+
+```
+tail -f  $JFROG_HOME/artifcatory/var/log/access.log
 ```
