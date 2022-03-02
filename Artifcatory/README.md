@@ -32,5 +32,4 @@ echo "export JFROG_HOME=/opt/jfrog" >> ~/.bashrc
 echo "export JF_PRODUCT_VAR=/opt/jfrog-var" >> ~/.bashrc
 source ~/.bashrc
 ```
-
-- 
+Test whether env variables set or not using ``` echo $JFROG_HOME ```
