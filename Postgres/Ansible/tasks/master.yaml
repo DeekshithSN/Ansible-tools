@@ -1,0 +1,32 @@
+--- 
+
+  - name: update pg_hba file to sllow all 
+    lineinfile: path=/etc/postgresql/10/main/pg_hba.conf line="host    all all 0.0.0.0/0 md5"
+    
+  - name: update replication user
+    lineinfile: path=/etc/postgresql/10/main/pg_hba.conf line="host   replication replica slave_ip/24 md5"
+    
+  - name: add postgres conf 
+    lineinfile: path=/etc/postgresql/10/main/postgresql.conf line={{ item }}
+    with_items:
+      - "{{ postgres_master }}"
+      
+  - name: Give permissions to an arichive file
+    file:
+      path: /var/lib/postgresql/10/main/archive
+      state: directory
+      owner: postgres
+      group: postgres
+      mode: '0700'
+      
+  - name: Connect to acme database, create django user, and grant access to database and products table
+    become: true
+    become_user: postgres
+    postgresql_user:
+      db: postgres
+      name: replica
+      password: replica
+      role_attr_flags: LOGIN,REPLICATION
+  
+ - name: start postgresql service
+   service: name=postgresql state=restarted
