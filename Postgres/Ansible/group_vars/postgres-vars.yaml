@@ -1,0 +1,8 @@
+system_packages:
+  - python3-psycopg2 
+  - python3-pip 
+  - openssl 
+  - python3-disutils 
+  - postgresql-10
+  - postgresql-10-prefix 
+  - postgres-contrib
