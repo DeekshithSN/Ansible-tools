@@ -173,7 +173,7 @@ shared:
     username: artifactory
   node:
     haEnabled: true
-    primary: true
+    primary: false
 ```
 
 - Run install script 
@@ -183,3 +183,23 @@ sudo $JFROG_HOME/artifcatory/app/bin/installService.sh
 ```
 
 make  sure system.yaml didnt change much..
+
+- copy both master & join key 
+
+```
+from primary /opt/jfrog/artifcatory/var/etc/security/master.key copy it to secondary /opt/jfrog/artifcatory/var/etc/security/master.key
+from primary /opt/jfrog/artifcatory/var/etc/security/join.key copy it to secondary /opt/jfrog/artifcatory/var/etc/security/join.key
+```
+
+
+- start artifcatory service 
+
+```
+systemctl start artifactory.service 
+```
+
+- Check the logs whether its working or not 
+
+```
+tail -f  $JFROG_HOME/artifcatory/var/log/access.log
+```
