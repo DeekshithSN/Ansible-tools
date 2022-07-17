@@ -28,3 +28,7 @@
   get_url:
     url: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
     dest: /opt
+
+- unarchive:
+    src: /opt/latest-unix.tar.gz
+    dest: /opt
