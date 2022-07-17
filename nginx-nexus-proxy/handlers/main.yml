@@ -1,6 +1,5 @@
 ---
-- name: restart tomcat
-  service: name=tomcat state=restarted
-
-- name: restart iptables
-  service: name=iptables state=restarted
+- name: Restart nginx service
+  service:
+    name: nginx
+    state: restarted

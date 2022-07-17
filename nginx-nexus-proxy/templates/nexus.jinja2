@@ -1,0 +1,72 @@
+          server {
+            listen 443 ssl;
+            listen [::]:443 ssl;
+
+            ssl_certificate {{ APP_CERT_FILE }};
+            ssl_certificate_key {{ APP_PRVKEY_FILE }};
+
+
+ 
+            ssl_protocols TLSv1.3;
+            ssl_prefer_server_ciphers on;
+            ssl_ciphers EECDH+AESGCM:EDH+AESGCM;
+            ssl_ecdh_curve secp384r1;
+            ssl_session_timeout  10m;
+            ssl_session_cache shared:SSL:10m;
+            ssl_session_tickets off;
+            ssl_stapling on;
+            ssl_stapling_verify on;
+            resolver 8.8.8.8 8.8.4.4 valid=300s;
+            resolver_timeout 5s;
+            # Disable strict transport security for now. You can uncomment the following
+            # line if you understand the implications.
+            #add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+            add_header X-Frame-Options DENY;
+            add_header X-Content-Type-Options nosniff;
+            add_header X-XSS-Protection "1; mode=block";
+
+
+            server_name  nginx-revprxy-4-nexus.com;
+            access_log /var/log/nginx/nexus.access.log;
+            error_log /var/log/nginx/nexus.error.log;
+
+
+
+            # For Nexus Web URL:
+
+            location / 
+            {
+              proxy_pass {{ NEXUS_URL }};
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_buffering    off;
+              proxy_request_buffering off;
+              keepalive_timeout  5 5;
+              tcp_nodelay        on;
+              proxy_connect_timeout 90;
+              proxy_send_timeout 120;
+              proxy_read_timeout 300;
+              client_max_body_size 10m;
+             }
+
+             # For Docker Connections (this is used by Docker client by default):
+
+              location /v2/ 
+              {
+                 proxy_set_header Host $host;
+                 proxy_set_header X-Real-IP $remote_addr;
+                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                 proxy_set_header X-Forwarded-Proto "https";
+                 client_max_body_size 2048m;
+                proxy_pass {{ NEXUS_DOCKER }};
+              }
+              }
+
+             server {
+                listen 80;
+                listen [::]:80;
+
+                server_name {{ HOST_IP }};
+                return 302 https://$server_name$request_uri;
+                }

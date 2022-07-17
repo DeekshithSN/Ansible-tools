@@ -1,0 +1,12 @@
+CA_PRVKEY_FILE: /root/CA_key.pem
+CA_CSR_FILE: /root/CA.csr
+CA_CERT_FILE: /root/CA.crt
+APP_PRVKEY_FILE: /root/app_key.pem
+APP_CSR_FILE: /root/app.csr
+APP_CERT_FILE: /root/app.crt
+HOST_IP: "35.233.159.26"
+DNS_NAME: mydom.in
+SUBJ_ALT: "IP:35.233.159.26,DNS:mydom.in"
+NEXUS_URL: http://35.233.159.26:8081
+NEXUS_DOCKER: http://35.233.159.26:8084
+BECOME_USER: nginx
