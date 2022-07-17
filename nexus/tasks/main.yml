@@ -31,4 +31,4 @@
 
 - name: unarchive tar.gz files 
   shell: |
-    cd /opt && tar -xvf latest-unix.tar.gz
+    cd /opt && tar -xvf nexus-3.40.1-01-unix.tar.gz
