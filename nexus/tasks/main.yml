@@ -32,3 +32,7 @@
 - name: unarchive tar.gz files 
   shell: |
     cd /opt && tar -xvf nexus-3.40.1-01-unix.tar.gz
+
+- name: start nexus
+  shell: |
+    sh /opt/nexus-3.40.1-01/bin/nexus start
