@@ -10,7 +10,7 @@
 
 - name: install java8 
   apt:
-    name: {{ item }}
+    name: "{{ item }}"
     state: present 
   with_items: 
     - "{{ java_packages }}"
@@ -25,6 +25,6 @@
   when: java_result is failed
 
 - name: download nexus file 
-  unarchive: 
-    src: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+  get_url:
+    url: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
     dest: /opt
