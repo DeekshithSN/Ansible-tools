@@ -1,0 +1,29 @@
+---
+- name: Run the equivalent of "apt-get update"
+  apt:
+    update_cache: yes
+
+- name: Check if java is installed
+  command: java -version
+  register: java_result
+  ignore_errors: True
+
+- name: install java8 
+  apt:
+    name: {{ item }}
+    state: present 
+  loop: "{{ java_packages }}"
+  when: java_result is failed
+
+- name: set java env variables 
+  copy:
+    content: | 
+      JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+      JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+    dest: /etc/environment 
+  when: java_result is failed
+
+- name: download nexus file 
+  unarchive: 
+    src: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+    dest: /opt
