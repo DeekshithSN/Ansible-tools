@@ -29,7 +29,6 @@
     url: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
     dest: /opt
 
-- unarchive:
-    src: /opt/"{{ item }}"
-    dest: /opt
-  with_fileglob: "nexus-*"
+- name: unarchive tar.gz files 
+  shell: |
+    cd /opt && tar -xvf latest-unix.tar.gz
