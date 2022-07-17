@@ -40,6 +40,3 @@
 - name: read admin intial password
   command: cat /opt/sonatype-work/nexus3/admin.password
   register: result
-
-- debug:
-    var: result.stdout_lines
