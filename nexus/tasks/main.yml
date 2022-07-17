@@ -36,3 +36,10 @@
 - name: start nexus
   shell: |
     sh /opt/nexus-3.40.1-01/bin/nexus start
+
+- name: read admin intial password
+  command: cat /opt/sonatype-work/nexus3/admin.password
+  register: result
+
+- debug:
+  var: result
