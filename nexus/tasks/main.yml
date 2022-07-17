@@ -30,5 +30,6 @@
     dest: /opt
 
 - unarchive:
-    src: /opt/latest-unix.tar.gz
+    src: /opt/"{{ item }}"
     dest: /opt
+  with_fileglob: "nexus-*"
