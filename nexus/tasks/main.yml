@@ -12,7 +12,8 @@
   apt:
     name: {{ item }}
     state: present 
-  loop: "{{ java_packages }}"
+  with_items: 
+    - "{{ java_packages }}"
   when: java_result is failed
 
 - name: set java env variables 
