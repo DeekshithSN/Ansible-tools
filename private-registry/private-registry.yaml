@@ -1,48 +1,48 @@
 ---
-hosts: kubernetes
-become: true
-vars: 
-  - nexus_machine_ip: 35.233.159.26
-  - nexus_docker_registry: 35.233.159.26:8084
-  - nexus_user_name: admin
-  - nexus_user_password: admin 
-tasks:
-  - name: update daemon json
-    template:
-      src: daemon.json
-      dest: /etc/docker/daemon.json
-  
-  - name: restart docker 
-    service:
-      name: docker 
-      state: restarted 
+- hosts: kubernetes
+  become: true
+  vars: 
+    - nexus_machine_ip: 35.233.159.26
+    - nexus_docker_registry: 35.233.159.26:8084
+    - nexus_user_name: admin
+    - nexus_user_password: admin 
+  tasks:
+    - name: update daemon json
+      template:
+        src: daemon.json
+        dest: /etc/docker/daemon.json
+    
+    - name: restart docker 
+      service:
+        name: docker 
+        state: restarted 
 
-  - name: docker login to private registry 
-    shell: docker login -u {{ nexus_user_name }} -p {{ nexus_user_password }} {{ nexus_machine_ip }}
+    - name: docker login to private registry 
+      shell: docker login -u {{ nexus_user_name }} -p {{ nexus_user_password }} {{ nexus_machine_ip }}
 
-  - name: Create a directory if it does not exist
-    file:
-      path: /etc/docker/certs.d/{{ nexus_machine_ip }}
-      state: directory
+    - name: Create a directory if it does not exist
+      file:
+        path: /etc/docker/certs.d/{{ nexus_machine_ip }}
+        state: directory
 
-  - name: copy app.crt of nginx
-    template: 
-      src: app.crt
-      dest: /etc/docker/certs.d/{{ nexus_machine_ip }}/
+    - name: copy app.crt of nginx
+      template: 
+        src: app.crt
+        dest: /etc/docker/certs.d/{{ nexus_machine_ip }}/
 
-  - name: create ca-certs folder
-    file:
-      path: /usr/local/share/ca-certificates/extra
-      state: directory
-  
-  - name: copy app.crt of nginx
-    template: 
-      src: app.crt
-      dest: /usr/local/share/ca-certificates/extra
+    - name: create ca-certs folder
+      file:
+        path: /usr/local/share/ca-certificates/extra
+        state: directory
+    
+    - name: copy app.crt of nginx
+      template: 
+        src: app.crt
+        dest: /usr/local/share/ca-certificates/extra
 
-  - name: ca-certs update & containerd restart
-    shell: |
-      sudo update-ca-certificates
-      ls -l /etc/ssl/certs/app*
-      nsenter --target 1 --mount systemctl restart containerd
-  
+    - name: ca-certs update & containerd restart
+      shell: |
+        sudo update-ca-certificates
+        ls -l /etc/ssl/certs/app*
+        nsenter --target 1 --mount systemctl restart containerd
+    
