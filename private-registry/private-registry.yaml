@@ -30,4 +30,19 @@ tasks:
       src: app.crt
       dest: /etc/docker/certs.d/{{ nexus_machine_ip }}/
 
+  - name: create ca-certs folder
+    file:
+      path: /usr/local/share/ca-certificates/extra
+      state: directory
+  
+  - name: copy app.crt of nginx
+    template: 
+      src: app.crt
+      dest: /usr/local/share/ca-certificates/extra
+
+  - name: ca-certs update & containerd restart
+    shell: |
+      sudo update-ca-certificates
+      ls -l /etc/ssl/certs/app*
+      nsenter --target 1 --mount systemctl restart containerd
   
