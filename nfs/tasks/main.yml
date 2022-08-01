@@ -1,0 +1,27 @@
+---
+- name: Run the equivalent of "apt-get update"
+  apt:
+    update_cache: yes
+
+- name: install nfs server packages 
+  apt:
+    name: nfs-kernel-server
+    state: present 
+
+- name: create nfs shared path directory 
+  file:
+    path: /mnt/nfs_share
+    state: directory
+    recurse: yes
+    owner: nobody
+    group: nogroup
+
+- lineinfile:
+    path: /etc/exports
+    regexp: '^/mnt/nfs_share'
+    line: '/mnt/nfs_share  *(rw,sync,no_subtree_check,insecure)'
+
+- name: restart nfs server 
+  systemd:
+    state: restarted
+    name: nfs-kernel-server
