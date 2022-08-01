@@ -1,0 +1,24 @@
+---
+- hosts: kubernetes
+  become: true
+  vars: 
+    - nexus_machine_ip: 34.100.182.114
+    - nexus_docker_registry: 34.100.182.114:8084
+    - nexus_user_name: admin
+    - nexus_user_password: password 
+  tasks:
+    - name: create ca-certs folder
+      file:
+        path: /usr/local/share/ca-certificates/extra
+        state: directory
+
+    - name: copy app.crt of nginx
+      template:
+        src: app.crt
+        dest: /usr/local/share/ca-certificates/extra
+
+    - name: ca-certs update & containerd restart
+      shell: |
+        sudo update-ca-certificates
+        ls -l /etc/ssl/certs/app*
+        nsenter --target 1 --mount systemctl restart containerd
